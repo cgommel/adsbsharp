@@ -236,7 +236,7 @@ namespace ADSBSharp
         #endregion
 
         #region Samples Callback
-
+        int samplecount = 0;
         private void rtl_SamplesAvailable(object sender, Complex* buf, int length)
         {
             for (var i = 0; i < length; i++)
@@ -245,7 +245,7 @@ namespace ADSBSharp
                 var imag = buf[i].Imag;
 
                 var mag = real * real + imag * imag;
-
+                samplecount++;
                 _decoder.ProcessSample(mag);
             }
         }
@@ -259,7 +259,10 @@ namespace ADSBSharp
 
             _avgFps = 0.9f * _avgFps + 0.1f * fps;
 
-            fpsLabel.Text = ((int) _avgFps).ToString();
+            samplecount /= 1000;
+            fpsLabel.Text = samplecount.ToString();
+            samplecount = 0;
+           // fpsLabel.Text = ((int) _avgFps).ToString();
         }
 
         private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
